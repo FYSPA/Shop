@@ -1,35 +1,45 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+export default function TabsLayout() {
+    return (
+        <Tabs screenOptions={{
+            tabBarActiveTintColor: '#242424',
+            tabBarShowLabel: false,
+            tabBarStyle: {
+                height: 60,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+            }
+        }}>
+            <Tabs.Screen
+                name="home"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home-variant" size={28} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="favorite"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color }) => <MaterialCommunityIcons name="bookmark-outline" size={28} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="notifications"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color }) => <MaterialCommunityIcons name="bell-outline" size={28} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-outline" size={28} color={color} />,
+                }}
+            />
+        </Tabs>
+    );
 }
