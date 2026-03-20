@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.void.test.app"
+      "package": "com.v0id.orchestrator.app"
     },
     "web": {
       "output": "static",
