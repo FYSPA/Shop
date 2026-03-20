@@ -44,6 +44,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "owner": "fyspa",
+    "extra": {
+      "eas": {
+        "projectId": "3328ce10-de26-4a29-9df5-44b9a727759b"
+      }
     }
   }
 }
