@@ -17,4 +17,4 @@ jobs:
       - name: 📦 Install
         run: npm install
       - name: 🏗 Build APK
-        run: npx eas-build -p android --profile preview --local --non-interactive --output=app-release.apk
+        run: npx eas-cli build -p android --profile preview --local --non-interactive --output=app-release.apk
