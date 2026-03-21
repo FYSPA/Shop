@@ -12,7 +12,7 @@ jobs:
 
       - name: 📢 Notify: Start
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"STARTING\", \"downloadUrl\": \"PENDING\"}"
 
@@ -35,7 +35,7 @@ jobs:
 
       - name: 📢 Notify: Installing
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"INSTALLING\", \"downloadUrl\": \"PENDING\"}"
 
@@ -44,7 +44,7 @@ jobs:
 
       - name: 📢 Notify: Building APK
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"BUILDING_APK\", \"downloadUrl\": \"PENDING\"}"
 
@@ -63,6 +63,6 @@ jobs:
 
       - name: 📢 Notify: Success
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"SUCCESS\", \"downloadUrl\": \"https://github.com/FYSPA/Shop/releases/download/build-${{ github.run_number }}/app-release.apk\"}"
