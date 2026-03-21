@@ -10,7 +10,7 @@ jobs:
 
       - name: 📢 Notify: Start OTA
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"STARTING_OTA\", \"downloadUrl\": \"PENDING\"}"
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: 📢 Notify: Syncing
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"SYNCING\", \"downloadUrl\": \"PENDING\"}"
 
@@ -39,6 +39,6 @@ jobs:
 
       - name: 📢 Notify: Updated
         run: |
-          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"UPDATED\", \"downloadUrl\": \"OTA_UPDATE\"}"
