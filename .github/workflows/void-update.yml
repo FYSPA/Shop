@@ -8,26 +8,37 @@ jobs:
       - name: 🏗 Checkout
         uses: actions/checkout@v3
 
+      - name: 📢 Notify: Start OTA
+        run: |
+          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          -H "Content-Type: application/json" \
+          -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"STARTING_OTA\", \"downloadUrl\": \"PENDING\"}"
+
       - name: 🟢 Setup Node 20
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: 🚀 Setup Expo + EAS
+      - name: 🚀 Setup Expo
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
+      - name: 📢 Notify: Syncing
+        run: |
+          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
+          -H "Content-Type: application/json" \
+          -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"SYNCING\", \"downloadUrl\": \"PENDING\"}"
+
       - name: 📦 Install dependencies
         run: npm install --legacy-peer-deps
 
       - name: ⚡️ Publish Update
-        run: |
-          npx eas-cli update --branch preview --message "Void Sync: Flash Update" --non-interactive
+        run: npx eas-cli update --branch preview --message "Void Sync: Flash Update" --non-interactive
 
-      - name: 📢 Notify Void API
+      - name: 📢 Notify: Updated
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
+          curl -X POST https://TU-DOMINIO.ngrok-free.dev/projects/webhook/build-finished \
           -H "Content-Type: application/json" \
-          -d '{"projectId": "b3aff62d-9ba0-4746-89a1-8a6a268decb6", "status": "UPDATED", "downloadUrl": "OTA_UPDATE"}'
+          -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"UPDATED\", \"downloadUrl\": \"OTA_UPDATE\"}"
