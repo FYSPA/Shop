@@ -1,6 +1,5 @@
 name: Void Flash Sync (OTA)
-on:
-  workflow_dispatch:
+on: [workflow_dispatch]
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -10,7 +9,7 @@ jobs:
 
       - name: 📢 Notify: Start OTA
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"STARTING_OTA\", \"downloadUrl\": \"PENDING\"}"
 
@@ -27,7 +26,7 @@ jobs:
 
       - name: 📢 Notify: Syncing
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"SYNCING\", \"downloadUrl\": \"PENDING\"}"
 
@@ -35,10 +34,11 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: ⚡️ Publish Update
-        run: npx eas-cli update --branch preview --message "Void Sync: Flash Update" --non-interactive
+        run: |
+          npx eas-cli update --branch preview --message "Void Sync: Flash Update" --non-interactive
 
       - name: 📢 Notify: Updated
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
           -H "Content-Type: application/json" \
           -d "{\"projectId\": \"b3aff62d-9ba0-4746-89a1-8a6a268decb6\", \"status\": \"UPDATED\", \"downloadUrl\": \"OTA_UPDATE\"}"
