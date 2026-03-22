@@ -1,34 +1,24 @@
-name: "Void Flash Sync (OTA)"
+name: "Void Flash Sync"
 on: [workflow_dispatch]
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: "🏗 Checkout"
+      - name: "Checkout"
         uses: actions/checkout@v3
-
-      - name: "📢 Notify Start OTA"
-        run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished -H "Content-Type: application/json" -d '{"projectId": "b3aff62d-9ba0-4746-89a1-8a6a268decb6", "status": "STARTING_OTA", "downloadUrl": "PENDING"}'
-
-      - name: "🟢 Setup Node"
+      - name: "Setup Node"
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
-      - name: "🚀 Setup Expo"
+      - name: "Setup Expo"
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: "📦 Install"
+      - name: "Install"
         run: npm install --legacy-peer-deps
-
-      - name: "⚡️ Publish Update"
-        run: |
-          npx eas-cli update --branch preview --message "VoidFlashSync" --non-interactive
-
-      - name: "📢 Notify Updated"
+      - name: "Update"
+        run: npx eas-cli update --branch preview --message "VoidFlashSync" --non-interactive
+      - name: "Notify"
         run: |
           curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished -H "Content-Type: application/json" -d '{"projectId": "b3aff62d-9ba0-4746-89a1-8a6a268decb6", "status": "UPDATED", "downloadUrl": "OTA_UPDATE"}'
