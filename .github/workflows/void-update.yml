@@ -3,10 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       voidBuildId:
-        description: "ID de la base de datos"
         required: true
       voidShortId:
-        description: "ID corto"
         required: true
 jobs:
   update:
@@ -15,7 +13,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Log: Start"
+      - name: "Log Start"
         run: |
           curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "⚡️ Iniciando Flash Sync (Actualización rápida)..."}'
 
@@ -30,14 +28,14 @@ jobs:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: "Log: Install"
+      - name: "Log Install"
         run: |
           curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "📦 Reinstalando dependencias para el bundle..."}'
 
       - name: "Install"
         run: npm install --legacy-peer-deps
 
-      - name: "Log: Update"
+      - name: "Log Update"
         run: |
           curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "🚀 Empaquetando JavaScript y enviando a Expo..."}'
 
