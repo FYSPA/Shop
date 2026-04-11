@@ -14,20 +14,37 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+
+      - name: "Log: Start"
+        run: |
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "⚡️ Iniciando Flash Sync (Actualización rápida)..."}'
+
       - name: "Setup Node"
         uses: actions/setup-node@v3
         with:
           node-version: 20
+
       - name: "Setup Expo"
         uses: expo/expo-github-action@v8
         with:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: "Log: Install"
+        run: |
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "📦 Reinstalando dependencias para el bundle..."}'
+
       - name: "Install"
         run: npm install --legacy-peer-deps
+
+      - name: "Log: Update"
+        run: |
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "🚀 Empaquetando JavaScript y enviando a Expo..."}'
+
       - name: "Update"
         run: npx eas-cli update --branch preview --message "VoidFlashSync" --non-interactive
-      - name: "Notify"
+
+      - name: "Notify Updated"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished -H "Content-Type: application/json" \
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished/build-finished -H "Content-Type: application/json" \
           -d '{"projectId": "09e1e899-dc3d-456c-b3ab-63641c98ed07", "voidBuildId": "${{ github.event.inputs.voidBuildId }}", "status": "UPDATED", "downloadUrl": "OTA_UPDATE"}'
