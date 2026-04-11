@@ -1,5 +1,13 @@
 name: "Void Build APK"
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      voidBuildId:
+        description: "ID de la base de datos"
+        required: true
+      voidShortId:
+        description: "ID corto"
+        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,4 +43,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "Notify"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished -H "Content-Type: application/json" -d '{"projectId": "b3aff62d-9ba0-4746-89a1-8a6a268decb6", "status": "SUCCESS", "downloadUrl": "https://github.com/FYSPA/Shop/releases/download/build-${{ github.run_number }}/app-release.apk"}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished -H "Content-Type: application/json" \
+          -d '{"projectId": "09e1e899-dc3d-456c-b3ab-63641c98ed07", "voidBuildId": "${{ github.event.inputs.voidBuildId }}", "status": "SUCCESS", "downloadUrl": "https://github.com/FYSPA/Shop/releases/download/build-${{ github.run_number }}/app-release.apk"}'
