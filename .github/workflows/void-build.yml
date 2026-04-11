@@ -3,8 +3,10 @@ on:
   workflow_dispatch:
     inputs:
       voidBuildId:
+        description: "ID de la base de datos"
         required: true
       voidShortId:
+        description: "ID corto"
         required: true
 jobs:
   build:
@@ -15,9 +17,9 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Log Start"
+      - name: "Log: Start"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "📡 Void ha tomado el control del servidor..."}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "Void ha tomado el control del servidor..."}'
 
       - name: "Setup Node"
         uses: actions/setup-node@v3
@@ -36,16 +38,16 @@ jobs:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: "Log Install"
+      - name: "Log: Install"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "📦 Instalando librerías y dependencias..."}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "Instalando librerías y dependencias..."}'
 
       - name: "Install"
         run: npm install --legacy-peer-deps
 
-      - name: "Log Build"
+      - name: "Log: Build"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "🏗 Iniciando compilación nativa (Gradle)..."}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "Iniciando compilación nativa de Android (Gradle). Esto tardará unos minutos..."}'
 
       - name: "Build"
         run: npx eas-cli build -p android --profile preview --local --non-interactive --output=app-release.apk
