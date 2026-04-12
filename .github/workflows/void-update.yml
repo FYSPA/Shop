@@ -2,10 +2,8 @@ name: "Void Flash Sync"
 on:
   workflow_dispatch:
     inputs:
-      voidBuildId:
-        required: true
-      voidShortId:
-        required: true
+      voidBuildId: { required: true }
+      voidShortId: { required: true }
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -13,40 +11,31 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
 
-      - name: "Log Start"
+      - name: "Void Terminal Bridge"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
-          -H "Content-Type: application/json" \
-          -H "ngrok-skip-browser-warning: 69420" \
-          -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"⚡️ Iniciando Flash Sync (OTA)...\"}"
+          # Creamos una función que envía cada línea a tu API
+          function v_log() {
+            while IFS= read -r line; do
+              echo "$line" # Esto lo mantiene en la consola de GitHub
+              curl -s -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
+                -H "Content-Type: application/json" \
+                -H "ngrok-skip-browser-warning: true" \
+                -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"$line\"}"
+            done
+          }
 
-      - name: "Setup Node"
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+          # Ahora "pipemaos" los comandos reales hacia nuestra función
+          echo "🚀 Iniciando Flash Sync..." | v_log
+          
+          echo "📦 Instalando dependencias..." | v_log
+          npm install --legacy-peer-deps 2>&1 | v_log
+          
+          echo "⚡️ Publicando en Expo..." | v_log
+          npx eas-cli update --branch preview --message "VoidSync" --non-interactive 2>&1 | v_log
 
-      - name: "Setup Expo"
-        uses: expo/expo-github-action@v8
-        with:
-          expo-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: "Log Update"
+      - name: "Finish"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
+          curl -s -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
           -H "Content-Type: application/json" \
-          -H "ngrok-skip-browser-warning: 69420" \
-          -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"🚀 Publicando cambios en Expo...\"}"
-
-      - name: "Install"
-        run: npm install --legacy-peer-deps
-
-      - name: "Update"
-        run: npx eas-cli update --branch preview --message "VoidFlashSync" --non-interactive
-
-      - name: "Notify Success"
-        run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
-          -H "Content-Type: application/json" \
-          -H "ngrok-skip-browser-warning: 69420" \
-          -d "{\"projectId\": \"09e1e899-dc3d-456c-b3ab-63641c98ed07\", \"voidBuildId\": \"${{ github.event.inputs.voidBuildId }}\", \"status\": \"UPDATED\", \"downloadUrl\": \"OTA_UPDATE\"}"
+          -H "ngrok-skip-browser-warning: true" \
+          -d "{\"projectId\": \"09e1e899-dc3d-456c-b3ab-63641c98ed07\", \"voidBuildId\": \"${{ github.event.inputs.voidBuildId }}\", \"status\": \"UPDATED\", \"downloadUrl\": \"OTA\"}"
