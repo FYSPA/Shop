@@ -16,25 +16,28 @@ jobs:
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
+          # Función de log ultra-robusta
           function v_log() {
             local type=$1
             while IFS= read -r line; do
               echo "[$type] $line"
-              CLEAN=$(echo "$line" | tr -d '"' | tr -d "\\")
-              curl -s -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
+              # Limpiamos comillas y barras usando sed (más seguro que tr)
+              CLEAN=$(echo "$line" | sed 's/[\"/]//g')
+              # Enviamos el curl pero con un timeout de 2 segundos y que no falle el script (|| true)
+              curl -s -m 2 -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
                 -H "Content-Type: application/json" \
                 -H "ngrok-skip-browser-warning: true" \
-                -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"$CLEAN\", \"type\": \"$type\"}"
+                -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"$CLEAN\", \"type\": \"$type\"}" || true
             done
           }
 
-          echo "🚀 Iniciando infraestructura de compilación..." | v_log github
+          echo "🚀 Iniciando infraestructura Void..." | v_log github
           
-          echo "📦 Instalando dependencias nativas..." | v_log github
+          echo "📦 Instalando dependencias..." | v_log github
           npm install --legacy-peer-deps 2>&1 | v_log github
           
-          echo "🏗 Iniciando compilación de APK con Gradle..." | v_log expo
-          EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} npx eas-cli build -p android --profile preview --local --non-interactive --output=app-release.apk 2>&1 | v_log expo
+          echo "🏗 Iniciando compilación Gradle (Android)..." | v_log expo
+          CI=1 EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} npx eas-cli build -p android --profile preview --local --non-interactive --output=app-release.apk 2>&1 | v_log expo
 
       - name: "Release"
         if: success()
