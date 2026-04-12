@@ -21,7 +21,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.v0id.orchestrator.app"
+      "package": "com.fyspa.shop"
     },
     "web": {
       "output": "static",
