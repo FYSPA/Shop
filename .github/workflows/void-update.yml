@@ -15,7 +15,10 @@ jobs:
 
       - name: "Log Start"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "⚡️ Flash Sync: Iniciando actualización rápida..."}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
+          -H "Content-Type: application/json" \
+          -H "ngrok-skip-browser-warning: 69420" \
+          -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"⚡️ Iniciando Flash Sync (OTA)...\"}"
 
       - name: "Setup Node"
         uses: actions/setup-node@v3
@@ -28,20 +31,22 @@ jobs:
           expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: "Log Dependencies"
+      - name: "Log Update"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "📦 Verificando dependencias de JS..."}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
+          -H "Content-Type: application/json" \
+          -H "ngrok-skip-browser-warning: 69420" \
+          -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"🚀 Publicando cambios en Expo...\"}"
 
       - name: "Install"
         run: npm install --legacy-peer-deps
-
-      - name: "Log Update"
-        run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs -H "Content-Type: application/json" -d '{"shortId": "${{ github.event.inputs.voidShortId }}", "message": "🚀 Publicando cambios en los servidores de Expo..."}'
 
       - name: "Update"
         run: npx eas-cli update --branch preview --message "VoidFlashSync" --non-interactive
 
       - name: "Notify Success"
         run: |
-          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished -H "Content-Type: application/json" -d '{"projectId": "09e1e899-dc3d-456c-b3ab-63641c98ed07", "voidBuildId": "${{ github.event.inputs.voidBuildId }}", "status": "UPDATED", "downloadUrl": "OTA_UPDATE"}'
+          curl -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
+          -H "Content-Type: application/json" \
+          -H "ngrok-skip-browser-warning: 69420" \
+          -d "{\"projectId\": \"09e1e899-dc3d-456c-b3ab-63641c98ed07\", \"voidBuildId\": \"${{ github.event.inputs.voidBuildId }}\", \"status\": \"UPDATED\", \"downloadUrl\": \"OTA_UPDATE\"}"
