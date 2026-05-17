@@ -15,29 +15,42 @@ jobs:
       - name: "Void Terminal Bridge"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          VOID_WEBHOOK_SECRET: ${{ secrets.VOID_WEBHOOK_SECRET }}
         run: |
-          # Función de log ultra-robusta
-          function v_log() {
+          compute_signature() {
+            echo -n "$1" | openssl dgst -sha256 -hmac "$VOID_WEBHOOK_SECRET" | sed 's/^.* //'
+          }
+
+          send_log() {
             local type=$1
+            local message=$2
+            local payload="{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"$message\", \"type\": \"$type\"}"
+            local signature=$(compute_signature "$payload")
+            curl -s -m 2 -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
+              -H "Content-Type: application/json" \
+              -H "X-Void-Signature: sha256=$signature" \
+              -H "ngrok-skip-browser-warning: true" \
+              -d "$payload" || true
+          }
+
+          v_log() {
             while IFS= read -r line; do
               echo "[$type] $line"
-              # Limpiamos comillas y barras usando sed (más seguro que tr)
               CLEAN=$(echo "$line" | sed 's/[\"/]//g')
-              # Enviamos el curl pero con un timeout de 2 segundos y que no falle el script (|| true)
-              curl -s -m 2 -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/logs \
-                -H "Content-Type: application/json" \
-                -H "ngrok-skip-browser-warning: true" \
-                -d "{\"shortId\": \"${{ github.event.inputs.voidShortId }}\", \"message\": \"$CLEAN\", \"type\": \"$type\"}" || true
+              send_log "$type" "$CLEAN"
             done
           }
 
-          echo "🚀 Iniciando infraestructura Void..." | v_log github
+          type=github
+          echo "🚀 Iniciando infraestructura Void..." | v_log
           
-          echo "📦 Instalando dependencias..." | v_log github
-          npm install --legacy-peer-deps 2>&1 | v_log github
+          type=github
+          echo "📦 Instalando dependencias..." | v_log
+          npm install --legacy-peer-deps 2>&1 | v_log
           
-          echo "🏗 Iniciando compilación Gradle (Android)..." | v_log expo
-          CI=1 EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} npx eas-cli build -p android --profile preview --local --non-interactive --output=app-release.apk 2>&1 | v_log expo
+          type=expo
+          echo "🏗 Iniciando compilación Gradle (Android)..." | v_log
+          CI=1 EXPO_TOKEN=${{ secrets.EXPO_TOKEN }} npx eas-cli build -p android --profile preview --local --non-interactive --output=app-release.apk 2>&1 | v_log
 
       - name: "Release"
         if: success()
@@ -50,8 +63,18 @@ jobs:
 
       - name: "Finish"
         if: always()
+        env:
+          VOID_WEBHOOK_SECRET: ${{ secrets.VOID_WEBHOOK_SECRET }}
         run: |
+          compute_signature() {
+            echo -n "$1" | openssl dgst -sha256 -hmac "$VOID_WEBHOOK_SECRET" | sed 's/^.* //'
+          }
+          RELEASE_TAG="build-${{ github.run_number }}"
+          DOWNLOAD_URL="https://github.com/FYSPA/Shop/releases/download/$RELEASE_TAG/app-release.apk"
+          PAYLOAD="{\"projectId\": \"09e1e899-dc3d-456c-b3ab-63641c98ed07\", \"voidBuildId\": \"${{ github.event.inputs.voidBuildId }}\", \"status\": \"${{ job.status }}\", \"downloadUrl\": \"$DOWNLOAD_URL\"}"
+          SIGNATURE=$(compute_signature "$PAYLOAD")
           curl -s -X POST https://nontheosophic-katherin-clumsiest.ngrok-free.dev/projects/webhook/build-finished \
           -H "Content-Type: application/json" \
+          -H "X-Void-Signature: sha256=$SIGNATURE" \
           -H "ngrok-skip-browser-warning: true" \
-          -d "{\"projectId\": \"09e1e899-dc3d-456c-b3ab-63641c98ed07\", \"voidBuildId\": \"${{ github.event.inputs.voidBuildId }}\", \"status\": \"${{ job.status }}\", \"downloadUrl\": \"https://github.com/FYSPA/Shop/releases/download/build-${{ github.run_number }}/app-release.apk\"}"
+          -d "$PAYLOAD"
